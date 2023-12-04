@@ -1,11 +1,19 @@
 use gloo_console::log;
 use gloo_net::http::Request;
+use serde::Deserialize;
 use std::*;
 use yew::prelude::*;
+
+#[derive(Clone, PartialEq, Deserialize)]
+struct PageIndex {
+    name: String,
+    filename: String,
+}
 
 #[derive(Clone, PartialEq)]
 struct Page {
     name: String,
+    filename: String,
     markdown: String,
 }
 
@@ -19,21 +27,35 @@ fn App() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 let pages = pages.clone();
 
-                let fetched_page_markdown = Request::get("/pages/main.md")
+                let fetched_page_indices: Vec<PageIndex> = Request::get("/pages/index.json5")
                     .send()
                     .await
-                    .expect("Error fetching the Markdown page file!")
-                    .text()
+                    .expect("Failed fetching the index!")
+                    .json()
                     .await
-                    .expect("Error parsing the Markdown page file!");
-                let fetched_page = Page {
-                    name: String::from("Main"),
-                    markdown: fetched_page_markdown,
-                };
+                    .expect("Failed parsing the index!");
+                let mut fetched_pages: Vec<Page> = Vec::new();
 
-                log!("{}", &fetched_page.markdown);
+                for page_index in fetched_page_indices.iter() {
+                    let fetched_page_markdown = Request::get(format!("/pages/{}", &page_index.filename).as_str())
+                        .send()
+                        .await
+                        .expect("Error fetching the Markdown page file!")
+                        .text()
+                        .await
+                        .expect("Error parsing the Markdown page file!");
+                    let fetched_page = Page {
+                        name: String::from("Main"),
+                        filename: String::from("main.md"),
+                        markdown: fetched_page_markdown,
+                    };
 
-                pages.set(vec![fetched_page]);
+                    log!("{}", &fetched_page.markdown);
+
+                    fetched_pages.push(fetched_page);
+                }
+
+                pages.set(fetched_pages);
             });
             || ()
         });
