@@ -16,8 +16,6 @@ fn App() -> Html {
         let pages = pages.clone();
 
         use_effect_with((), move |_| {
-            let pages = pages.clone();
-
             wasm_bindgen_futures::spawn_local(async move {
                 let pages = pages.clone();
 
