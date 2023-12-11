@@ -71,7 +71,7 @@ fn home() -> Html {
             wasm_bindgen_futures::spawn_local(async move {
                 let pages = pages.clone();
 
-                let fetched_page_indices: Vec<PageIndex> = Request::get("/pages/index.json5")
+                let fetched_page_indices: Vec<PageIndex> = Request::get("pages/index.json5")
                     .send()
                     .await
                     .expect("Failed fetching the index!")
@@ -83,7 +83,7 @@ fn home() -> Html {
                 for page_index in fetched_page_indices.iter() {
                     let page_index = page_index.clone();
                     let fetched_page_markdown =
-                        Request::get(format!("/pages/{}", &page_index.filename).as_str())
+                        Request::get(format!("pages/{}", &page_index.filename).as_str())
                             .send()
                             .await
                             .expect("Error fetching the Markdown page file!")
@@ -140,7 +140,7 @@ fn wiki_page(page_name: &PageName) -> Html {
                 let page_name = page_name.clone();
                 // TODO: Cache fetched page indices
                 // TODO: Move page index file path into a static variable
-                let fetched_page_indices: Vec<PageIndex> = Request::get("/pages/index.json5")
+                let fetched_page_indices: Vec<PageIndex> = Request::get("pages/index.json5")
                     .send()
                     .await
                     .expect("Failed fetching the index!")
@@ -154,7 +154,7 @@ fn wiki_page(page_name: &PageName) -> Html {
 
                     if fetched_page_index.name == page_name.name {
                         let fetched_page_markdown = Request::get(
-                            format!("/pages/{}", &fetched_page_index.filename).as_str(),
+                            format!("pages/{}", &fetched_page_index.filename).as_str(),
                         )
                         .send()
                         .await
