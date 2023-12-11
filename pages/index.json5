@@ -1,6 +1,10 @@
 [
 	{
-		"name": "Main",
+		"name": "main",
 		"filename": "main.md"
+	},
+	{
+		"name": "hello",
+		"filename": "hello.md"
 	}
 ]
