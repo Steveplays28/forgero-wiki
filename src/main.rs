@@ -55,9 +55,9 @@ fn switch(route: Route) -> Html {
 #[function_component(App)]
 fn app() -> Html {
     html! {
-        <BrowserRouter>
-            <Switch<Route> render={switch} /> // <- must be child of <BrowserRouter>
-        </BrowserRouter>
+        <HashRouter>
+            <Switch<Route> render={switch} />
+        </HashRouter>
     }
 }
 
